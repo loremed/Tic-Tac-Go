@@ -9,8 +9,8 @@ import (
 type Sign int8
 
 type Spot struct {
-	row uint8
-	col uint8
+	Row uint8
+	Col uint8
 }
 
 type Board [3][3]Sign
@@ -48,7 +48,7 @@ func init() {
 
 // Gets a spot from the board
 func GetSpot(spot Spot) Sign {
-	return board[spot.row][spot.col]
+	return board[spot.Row][spot.Col]
 }
 
 // Places an X or an O in the spot asked, if it is free
@@ -67,20 +67,20 @@ func SetSpot(sign Sign, spot Spot) (Sign, error) {
 		return EMPTY, errors.New("Spot is already taken")
 	}
 
-	board[spot.row][spot.col] = sign
+	board[spot.Row][spot.Col] = sign
 
 	// update conditions array and moveCount
 
 	moveCount++
 
-	conditions[spot.row+_ROW] += int8(sign)
-	conditions[spot.col+_COL] += int8(sign)
+	conditions[spot.Row+_ROW] += int8(sign)
+	conditions[spot.Col+_COL] += int8(sign)
 
-	if spot.row == spot.col {
+	if spot.Row == spot.Col {
 		conditions[_DIAG] += int8(sign)
 	}
 
-	if spot.row+spot.col == 2 {
+	if spot.Row+spot.Col == 2 {
 		conditions[_ANTIDIAG] += int8(sign)
 	}
 
@@ -126,4 +126,16 @@ func String(sign Sign) string {
 	} else {
 		return "O"
 	}
+}
+
+func ResetGame() {
+	board = [3][3]Sign{
+		{EMPTY, EMPTY, EMPTY},
+		{EMPTY, EMPTY, EMPTY},
+		{EMPTY, EMPTY, EMPTY},
+	}
+
+	moveCount = 0
+
+	conditions = [8]int8{0, 0, 0, 0, 0, 0, 0, 0}
 }
