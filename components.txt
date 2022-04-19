@@ -1,0 +1,59 @@
+TIMELINE
+
+Board
+
+Player Controller Interface
+    Human CLI Player Controller
+    Random CPU PLayer Controller
+
+Display Controller Interface
+    CLI Display Controller
+
+Game Controller
+
+Main
+
+Advanced CPU Player Controller (Minimax)
+
+GUI Display and Human PLayer Controller
+
+
+
+COMPONENTS
+
+Board
+    - object that behaves like a 3x3 board to play tic tac toe on.
+    - Methods:
+            - Get and Set a Spot
+            - Get the board
+            - Reset the game
+            - Say if the board is full or in a winning position
+            - Utilities for displaying text related to the Signs
+            - Print itseld
+
+Game Controller
+    - object that dictates the flow of the Game and handles the board and the interaction with the players
+    - the instance will be bound to
+            - two player controllers
+            - one display controller
+    - first idea:
+            - game() function with a loop and a state of the game
+            - depending on the current state (e.g. empty, player1, player2, full, draw, winner), different actions are performed. At the 
+              end of each action the state is changed and the loop in the game() function iterates
+
+    - state is probably a number with constants (e.g. const _START = 1). This way the body of the loop is a simple case/else if block
+
+Player Controller
+    - Interface with the GetPosition method
+    - User and CPU methods are created, each one is a different instance that will be bound to the Game Controller
+
+Display Controller
+    - Interface for displaying the board and notifying errors, draws and wins
+    - Methods would include
+            - display board
+            - display error
+            - display win by either player
+
+Main
+    - initial configuration (optional) such as the display method (GUI or CLI), the type of players and the sign they use (even a custom one)
+    - Instantiation of the correct type of player controller and display controller and their configuration
