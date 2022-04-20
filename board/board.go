@@ -2,6 +2,7 @@ package board
 
 import (
 	"errors"
+	"fmt"
 )
 
 // Types used
@@ -15,11 +16,17 @@ type Spot struct {
 
 type Board [3][3]Sign
 
+type Game struct {
+	board      Board
+	moveCount  uint8
+	conditions [8]int8
+}
+
 // Constants
 
 const EMPTY = Sign(0)
-const X = Sign(1)
-const O = Sign(-1)
+const PLAYER_ONE = Sign(1)
+const PLAYER_TWO = Sign(-1)
 
 const _ROW = 0
 const _COL = 3
@@ -28,68 +35,67 @@ const _ANTIDIAG = 7
 
 // Variables
 
-var board Board
+/* var board BoardType
 var moveCount uint8
-var conditions [8]int8
+var conditions [8]int8 */
 
-// Init
+// Game Contructor
 
-func init() {
-	board = [3][3]Sign{
-		{EMPTY, EMPTY, EMPTY},
-		{EMPTY, EMPTY, EMPTY},
-		{EMPTY, EMPTY, EMPTY},
+func NewGame() *Game {
+	return &Game{
+		board: Board{
+			{EMPTY, EMPTY, EMPTY},
+			{EMPTY, EMPTY, EMPTY},
+			{EMPTY, EMPTY, EMPTY},
+		},
+		moveCount:  0,
+		conditions: [8]int8{0, 0, 0, 0, 0, 0, 0, 0},
 	}
-
-	moveCount = 0
-
-	conditions = [8]int8{0, 0, 0, 0, 0, 0, 0, 0}
 }
 
 // Gets a spot from the board
-func GetSpot(spot Spot) Sign {
-	return board[spot.Row][spot.Col]
+func (g *Game) GetSpot(spot Spot) Sign {
+	return g.board[spot.Row][spot.Col]
 }
 
 // Places an X or an O in the spot asked, if it is free
 
-func SetSpot(sign Sign, spot Spot) (Sign, error) {
+func (g *Game) SetSpot(sign Sign, spot Spot) (Sign, error) {
 
 	// Exit if sign is not valid
 
-	if sign != X && sign != O {
+	if sign != PLAYER_ONE && sign != PLAYER_TWO && sign != EMPTY {
+		fmt.Println("invalid sign")
 		return EMPTY, errors.New("invalid sign")
 	}
 
 	// Exit if spot is not EMPTY
 
-	if GetSpot(spot) != EMPTY {
+	if g.GetSpot(spot) != EMPTY {
+		fmt.Println("spot taken")
 		return EMPTY, errors.New("Spot is already taken")
 	}
-
-	board[spot.Row][spot.Col] = sign
+	g.board[spot.Row][spot.Col] = sign
 
 	// update conditions array and moveCount
 
-	moveCount++
+	g.moveCount++
 
-	conditions[spot.Row+_ROW] += int8(sign)
-	conditions[spot.Col+_COL] += int8(sign)
+	g.conditions[spot.Row+_ROW] += int8(sign)
+	g.conditions[spot.Col+_COL] += int8(sign)
 
 	if spot.Row == spot.Col {
-		conditions[_DIAG] += int8(sign)
+		g.conditions[_DIAG] += int8(sign)
 	}
 
 	if spot.Row+spot.Col == 2 {
-		conditions[_ANTIDIAG] += int8(sign)
+		g.conditions[_ANTIDIAG] += int8(sign)
 	}
 
 	// Check if board is winning after current move
 
-	isWinning := IsWinning()
-
 	resultSign := EMPTY
-	if isWinning {
+	if g.IsWinning() {
 		resultSign = sign
 	}
 
@@ -98,8 +104,8 @@ func SetSpot(sign Sign, spot Spot) (Sign, error) {
 
 // Checks if board is winning using the conditions array
 
-func IsWinning() bool {
-	for _, value := range conditions {
+func (g *Game) IsWinning() bool {
+	for _, value := range g.conditions {
 		if value == 3 || value == -3 {
 			return true
 		}
@@ -109,33 +115,56 @@ func IsWinning() bool {
 
 // Checks if there is place on the board
 
-func IsFull() bool {
-	return moveCount == 9
+func (g *Game) IsFull() bool {
+	return g.moveCount == 9
 }
 
-func GetBoard() Board {
-	result := board
+func (g *Game) GetBoard() Board {
+	result := g.board
 	return result
 }
 
-func String(sign Sign) string {
+// Probably unused
+
+func (g *Game) ResetGame() {
+	g.board = [3][3]Sign{
+		{EMPTY, EMPTY, EMPTY},
+		{EMPTY, EMPTY, EMPTY},
+		{EMPTY, EMPTY, EMPTY},
+	}
+
+	g.moveCount = 0
+
+	g.conditions = [8]int8{0, 0, 0, 0, 0, 0, 0, 0}
+}
+
+// TODO: Move in the Cli display controller
+
+func (g Game) Print() {
+
+	/*fmt.Printf("\n %s | %s | %s \n", g.String(g.board[0][0]), g.String(g.board[0][1]), g.String(g.board[0][2]))
+	fmt.Println("-----------")
+	fmt.Printf(" %s | %s | %s \n", g.String(g.board[1][0]), g.String(g.board[1][1]), g.String(g.board[1][2]))
+	fmt.Println("-----------")
+	fmt.Printf(" %s | %s | %s \n\n", g.String(g.board[2][0]), g.String(g.board[2][1]), g.String(g.board[2][2]))*/
+
+	for _, i := range g.board {
+		for _, j := range i {
+			fmt.Printf("%d ", j)
+		}
+		fmt.Println("")
+	}
+
+}
+
+// TODO: remove when I have a display controller
+
+func (g *Game) String(sign Sign) string {
 	if sign == EMPTY {
 		return " "
-	} else if sign == X {
+	} else if sign == PLAYER_ONE {
 		return "X"
 	} else {
 		return "O"
 	}
-}
-
-func ResetGame() {
-	board = [3][3]Sign{
-		{EMPTY, EMPTY, EMPTY},
-		{EMPTY, EMPTY, EMPTY},
-		{EMPTY, EMPTY, EMPTY},
-	}
-
-	moveCount = 0
-
-	conditions = [8]int8{0, 0, 0, 0, 0, 0, 0, 0}
 }
