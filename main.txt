@@ -8,8 +8,8 @@ import (
 
 func main() {
 
-	userSign := board.X
-	cpuSign := board.O
+	userSign := board.PLAYER_ONE
+	cpuSign := board.PLAYER_TWO
 
 	playGame(userSign, cpuSign)
 
