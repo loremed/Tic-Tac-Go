@@ -1,13 +1,10 @@
 TIMELINE
 
-Board
+DONE Board
 
-Player Controller Interface
-    Human CLI Player Controller
+DONE Player Controller Interface
+    DONE Human CLI Player Controller
     Random CPU PLayer Controller
-
-Display Controller Interface
-    CLI Display Controller
 
 Game Controller
 
