@@ -33,12 +33,6 @@ const _COL = 3
 const _DIAG = 6
 const _ANTIDIAG = 7
 
-// Variables
-
-/* var board BoardType
-var moveCount uint8
-var conditions [8]int8 */
-
 // Game Contructor
 
 func NewGame() *Game {
@@ -141,30 +135,10 @@ func (g *Game) ResetGame() {
 // TODO: Move in the Cli display controller
 
 func (g Game) Print() {
-
-	/*fmt.Printf("\n %s | %s | %s \n", g.String(g.board[0][0]), g.String(g.board[0][1]), g.String(g.board[0][2]))
-	fmt.Println("-----------")
-	fmt.Printf(" %s | %s | %s \n", g.String(g.board[1][0]), g.String(g.board[1][1]), g.String(g.board[1][2]))
-	fmt.Println("-----------")
-	fmt.Printf(" %s | %s | %s \n\n", g.String(g.board[2][0]), g.String(g.board[2][1]), g.String(g.board[2][2]))*/
-
 	for _, i := range g.board {
 		for _, j := range i {
 			fmt.Printf("%d ", j)
 		}
 		fmt.Println("")
-	}
-
-}
-
-// TODO: remove when I have a display controller
-
-func (g *Game) String(sign Sign) string {
-	if sign == EMPTY {
-		return " "
-	} else if sign == PLAYER_ONE {
-		return "X"
-	} else {
-		return "O"
 	}
 }
