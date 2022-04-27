@@ -113,9 +113,8 @@ func (g *Game) IsFull() bool {
 	return g.moveCount == 9
 }
 
-func (g *Game) GetBoard() Board {
-	result := g.board
-	return result
+func (g *Game) GetBoard() *Board {
+	return &g.board
 }
 
 // Probably unused

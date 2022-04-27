@@ -4,9 +4,9 @@ DONE Board
 
 DONE Player Controller Interface
     DONE Human CLI Player Controller
-    Random CPU PLayer Controller
+    DONE Random CPU PLayer Controller
 
-Game Controller
+DONE Game Controller
 
 Main
 

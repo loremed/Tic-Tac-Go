@@ -21,6 +21,7 @@ type PlayerController interface {
 	DisplayError(err string)
 	DisplayWin(winner string, thisPlayer bool)
 	DisplayDraw()
+	PlayAgain() bool
 }
 
 func NewPlayerController(playerType PlayerType, boardToInterface *board.Board, p1Char string, p2Char string) PlayerController {

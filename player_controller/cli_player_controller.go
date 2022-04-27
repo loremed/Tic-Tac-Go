@@ -81,3 +81,15 @@ func (c CLIPlayerController) DisplayWin(winner string, thisPlayer bool) {
 func (c CLIPlayerController) DisplayDraw() {
 	fmt.Println("The gme ended in a draw!")
 }
+
+func (c CLIPlayerController) PlayAgain() bool {
+
+	fmt.Print("Do you want to play again?\n1: Yes\n2: No\nYour choice [1-2]: ")
+
+	var answer int
+
+	fmt.Scanf("%d", &answer)
+
+	return answer == 1
+
+}

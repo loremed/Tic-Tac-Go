@@ -27,3 +27,4 @@ func (r RandomPlayerController) DisplayBoard()                             {}
 func (r RandomPlayerController) DisplayError(err string)                   {}
 func (r RandomPlayerController) DisplayWin(winner string, thisPlayer bool) {}
 func (r RandomPlayerController) DisplayDraw()                              {}
+func (r RandomPlayerController) PlayAgain() bool                           { return true }
