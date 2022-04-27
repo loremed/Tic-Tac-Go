@@ -67,7 +67,7 @@ func (g *Game) SetSpot(sign Sign, spot Spot) (Sign, error) {
 
 	if g.GetSpot(spot) != EMPTY {
 		fmt.Println("spot taken")
-		return EMPTY, errors.New("Spot is already taken")
+		return EMPTY, errors.New("spot is already taken")
 	}
 	g.board[spot.Row][spot.Col] = sign
 
@@ -129,15 +129,4 @@ func (g *Game) ResetGame() {
 	g.moveCount = 0
 
 	g.conditions = [8]int8{0, 0, 0, 0, 0, 0, 0, 0}
-}
-
-// TODO: Move in the Cli display controller
-
-func (g Game) Print() {
-	for _, i := range g.board {
-		for _, j := range i {
-			fmt.Printf("%d ", j)
-		}
-		fmt.Println("")
-	}
 }

@@ -23,8 +23,8 @@ func (r RandomPlayerController) GetMove() board.Spot {
 }
 
 // Useless methods for a random player
-func (r RandomPlayerController) DisplayBoard()                             {}
-func (r RandomPlayerController) DisplayError(err string)                   {}
-func (r RandomPlayerController) DisplayWin(winner string, thisPlayer bool) {}
-func (r RandomPlayerController) DisplayDraw()                              {}
-func (r RandomPlayerController) PlayAgain() bool                           { return true }
+func (r RandomPlayerController) DisplayBoard()              {}
+func (r RandomPlayerController) DisplayError(err string)    {}
+func (r RandomPlayerController) DisplayWin(thisPlayer bool) {}
+func (r RandomPlayerController) DisplayDraw()               {}
+func (r RandomPlayerController) PlayAgain() bool            { return true }

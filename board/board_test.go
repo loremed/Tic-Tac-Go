@@ -1,7 +1,6 @@
 package board
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -270,66 +269,6 @@ func TestGameStruct_IsFull(t *testing.T) {
 			}
 			if got := g.IsFull(); got != tt.want {
 				t.Errorf("GameStruct.IsFull() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestGameStruct_GetBoard(t *testing.T) {
-	type fields struct {
-		board      Board
-		moveCount  uint8
-		conditions [8]int8
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   Board
-	}{
-		{
-			name: "Test board",
-			fields: fields{
-				board: Board{
-					{EMPTY, EMPTY, EMPTY},
-					{EMPTY, EMPTY, EMPTY},
-					{EMPTY, EMPTY, EMPTY},
-				},
-				moveCount:  3,
-				conditions: [8]int8{3, 0, 0, 0, 0, 0, 0, 0},
-			},
-			want: Board{
-				{EMPTY, EMPTY, EMPTY},
-				{EMPTY, EMPTY, EMPTY},
-				{EMPTY, EMPTY, EMPTY},
-			},
-		},
-		{
-			name: "Test board",
-			fields: fields{
-				board: Board{
-					{EMPTY, PLAYER_ONE, EMPTY},
-					{EMPTY, EMPTY, PLAYER_TWO},
-					{PLAYER_ONE, EMPTY, EMPTY},
-				},
-				moveCount:  3,
-				conditions: [8]int8{3, 0, 0, 0, 0, 0, 0, 0},
-			},
-			want: Board{
-				{EMPTY, PLAYER_ONE, EMPTY},
-				{EMPTY, EMPTY, PLAYER_TWO},
-				{PLAYER_ONE, EMPTY, EMPTY},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			g := &Game{
-				board:      tt.fields.board,
-				moveCount:  tt.fields.moveCount,
-				conditions: tt.fields.conditions,
-			}
-			if got := g.GetBoard(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GameStruct.GetBoard() = %v, want %v", got, tt.want)
 			}
 		})
 	}

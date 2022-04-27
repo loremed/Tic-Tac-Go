@@ -11,19 +11,20 @@ type GameController struct {
 	player2 player_controller.PlayerController
 }
 
-func NewGameController(playerType1 player_controller.PlayerType, playerType2 player_controller.PlayerType, player1Char string, player2char string) *GameController {
+func NewGameController(playerType1 player_controller.PlayerType, playerType2 player_controller.PlayerType, player1Char string, player2Char string, player1Name string, player2Name string) *GameController {
 	game := board.NewGame()
 
 	return &GameController{
 		game:    game,
-		player1: player_controller.NewPlayerController(playerType1, game.GetBoard(), player1Char, player2char),
-		player2: player_controller.NewPlayerController(playerType2, game.GetBoard(), player1Char, player2char),
+		player1: player_controller.NewPlayerController(playerType1, game.GetBoard(), player1Char, player2Char, player1Name, player2Name),
+		player2: player_controller.NewPlayerController(playerType2, game.GetBoard(), player1Char, player2Char, player1Name, player2Name),
 	}
 }
 
 func (c *GameController) ApplicationLoop() {
 
 	for c.SingleGameLoop() {
+
 	}
 
 }
@@ -51,14 +52,8 @@ func (c *GameController) SingleGameLoop() (playAgain bool) {
 }
 
 func (c *GameController) manageWin(winner board.Sign) {
-	switch winner {
-	case board.PLAYER_ONE:
-		c.player1.DisplayWin("Player One", true)
-		c.player2.DisplayWin("Player One", false)
-	case board.PLAYER_TWO:
-		c.player1.DisplayWin("Player Two", false)
-		c.player2.DisplayWin("Player Two", true)
-	}
+	c.player1.DisplayWin(winner == board.PLAYER_ONE)
+	c.player2.DisplayWin(winner == board.PLAYER_TWO)
 }
 
 func (c *GameController) PlayTurn(thisPlayer player_controller.PlayerController,

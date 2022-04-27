@@ -8,16 +8,20 @@ import (
 // Implements PlayerController interface. Specific for a CLI bound player.
 
 type CLIPlayerController struct {
-	b  *board.Board
-	p1 string
-	p2 string
+	b               *board.Board
+	p1Sign          string
+	p2Sign          string
+	thisPlayerName  string
+	otherPlayerName string
 }
 
-func NewCLIPlayerController(boardToInterface *board.Board, p1Char string, p2Char string) CLIPlayerController {
+func NewCLIPlayerController(boardToInterface *board.Board, p1Char string, p2Char string, name1 string, name2 string) CLIPlayerController {
 	return CLIPlayerController{
-		b:  boardToInterface,
-		p1: p1Char,
-		p2: p2Char,
+		b:               boardToInterface,
+		p1Sign:          p1Char,
+		p2Sign:          p2Char,
+		thisPlayerName:  name1,
+		otherPlayerName: name2,
 	}
 }
 
@@ -32,9 +36,9 @@ func (c CLIPlayerController) DisplayBoard() {
 
 func (c CLIPlayerController) toString(s board.Sign) string {
 	if s == board.PLAYER_ONE {
-		return c.p1
+		return c.p1Sign
 	} else if s == board.PLAYER_TWO {
-		return c.p2
+		return c.p2Sign
 	} else {
 		return " "
 	}
@@ -42,7 +46,8 @@ func (c CLIPlayerController) toString(s board.Sign) string {
 
 func (c CLIPlayerController) GetMove() board.Spot {
 	c.DisplayBoard()
-	fmt.Print("Choose where to place your sign: ")
+
+	fmt.Printf("%s, choose where to place your sign [1-9]: ", c.thisPlayerName)
 
 	var userMove int
 
@@ -50,7 +55,11 @@ func (c CLIPlayerController) GetMove() board.Spot {
 		n, err := fmt.Scanf("%d", &userMove)
 
 		if n == 1 {
-			break
+			if userMove > 0 && userMove < 10 {
+				break
+			} else {
+				fmt.Println("Choose a number between 1 and 9!")
+			}
 		} else {
 			fmt.Printf("Not a valid integer! %s", err.Error())
 		}
@@ -66,25 +75,26 @@ func (c CLIPlayerController) GetMove() board.Spot {
 }
 
 func (c CLIPlayerController) DisplayError(err string) {
-	fmt.Printf("Error: %s\n", err)
+	fmt.Printf("%s, error: %s\n", c.thisPlayerName, err)
 }
 
-func (c CLIPlayerController) DisplayWin(winner string, thisPlayer bool) {
-	fmt.Printf("The winner is %s\n", winner)
+func (c CLIPlayerController) DisplayWin(thisPlayer bool) {
 	if thisPlayer {
-		fmt.Println("You won!! Congratulations!")
+		fmt.Printf("The winner is %s\n", c.thisPlayerName)
+		fmt.Printf("%s, you won!! Congratulations!\n\n", c.thisPlayerName)
 	} else {
-		fmt.Println("You lost! Better luck next time :(")
+		fmt.Printf("The winner is %s\n", c.otherPlayerName)
+		fmt.Printf("%s, you lost! Better luck next time :(\n\n", c.thisPlayerName)
 	}
 }
 
 func (c CLIPlayerController) DisplayDraw() {
-	fmt.Println("The gme ended in a draw!")
+	fmt.Println("The game ended in a draw!")
 }
 
 func (c CLIPlayerController) PlayAgain() bool {
 
-	fmt.Print("Do you want to play again?\n1: Yes\n2: No\nYour choice [1-2]: ")
+	fmt.Printf("%s, do you want to play again?\n1: Yes\n2: No\nYour choice [1-2]: ", c.thisPlayerName)
 
 	var answer int
 

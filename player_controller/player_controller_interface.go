@@ -19,15 +19,15 @@ type PlayerController interface {
 	GetMove() board.Spot
 	DisplayBoard()
 	DisplayError(err string)
-	DisplayWin(winner string, thisPlayer bool)
+	DisplayWin(thisPlayer bool)
 	DisplayDraw()
 	PlayAgain() bool
 }
 
-func NewPlayerController(playerType PlayerType, boardToInterface *board.Board, p1Char string, p2Char string) PlayerController {
+func NewPlayerController(playerType PlayerType, boardToInterface *board.Board, p1Char string, p2Char string, p1Name string, p2Name string) PlayerController {
 	switch playerType {
 	case CLIPLAYER:
-		return NewCLIPlayerController(boardToInterface, p1Char, p2Char)
+		return NewCLIPlayerController(boardToInterface, p1Char, p2Char, p1Name, p2Name)
 	case RANDOMPLAYER:
 		return NewRandomPLayerController()
 	default:
