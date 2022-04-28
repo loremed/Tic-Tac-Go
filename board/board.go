@@ -59,14 +59,14 @@ func (g *Game) SetSpot(sign Sign, spot Spot) (Sign, error) {
 	// Exit if sign is not valid
 
 	if sign != PLAYER_ONE && sign != PLAYER_TWO && sign != EMPTY {
-		fmt.Println("invalid sign")
+		fmt.Println("DEBUG:invalid sign")
 		return EMPTY, errors.New("invalid sign")
 	}
 
 	// Exit if spot is not EMPTY
 
 	if g.GetSpot(spot) != EMPTY {
-		fmt.Println("spot taken")
+		fmt.Println("DEBUG:spot taken")
 		return EMPTY, errors.New("spot is already taken")
 	}
 	g.board[spot.Row][spot.Col] = sign

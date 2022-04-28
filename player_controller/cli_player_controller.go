@@ -1,7 +1,9 @@
 package player_controller
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"tic-tac-go/game/board"
 )
 
@@ -45,24 +47,26 @@ func (c CLIPlayerController) toString(s board.Sign) string {
 }
 
 func (c CLIPlayerController) GetMove() board.Spot {
-	c.DisplayBoard()
-
-	fmt.Printf("%s, choose where to place your sign [1-9]: ", c.thisPlayerName)
+	// c.DisplayBoard()
 
 	var userMove int
+	stdin := bufio.NewReader(os.Stdin)
 
 	for {
-		n, err := fmt.Scanf("%d", &userMove)
 
-		if n == 1 {
-			if userMove > 0 && userMove < 10 {
-				break
-			} else {
-				fmt.Println("Choose a number between 1 and 9!")
-			}
+		fmt.Printf("%s, choose where to place your sign [1-9]: ", c.thisPlayerName)
+		_, err := fmt.Fscanf(stdin, "%d\n", &userMove)
+
+		if err != nil { // error
+			stdin.ReadString('\n')
+			fmt.Println("Number is not valid. Try again.")
+		} else if userMove < 1 || userMove > 9 { // semantics
+			// stdin.ReadString('\n')
+			fmt.Println("Move number is not in range [1-9]. Try again.")
 		} else {
-			fmt.Printf("Not a valid integer! %s", err.Error())
+			break
 		}
+
 	}
 
 	userMove--
@@ -80,25 +84,39 @@ func (c CLIPlayerController) DisplayError(err string) {
 
 func (c CLIPlayerController) DisplayWin(thisPlayer bool) {
 	if thisPlayer {
-		fmt.Printf("The winner is %s\n", c.thisPlayerName)
+		fmt.Printf("\nThe winner is %s\n", c.thisPlayerName)
 		fmt.Printf("%s, you won!! Congratulations!\n\n", c.thisPlayerName)
 	} else {
-		fmt.Printf("The winner is %s\n", c.otherPlayerName)
+		fmt.Printf("\nThe winner is %s\n", c.otherPlayerName)
 		fmt.Printf("%s, you lost! Better luck next time :(\n\n", c.thisPlayerName)
 	}
 }
 
 func (c CLIPlayerController) DisplayDraw() {
-	fmt.Println("The game ended in a draw!")
+	fmt.Println("\nThe game ended in a draw!")
 }
 
 func (c CLIPlayerController) PlayAgain() bool {
 
-	fmt.Printf("%s, do you want to play again?\n1: Yes\n2: No\nYour choice [1-2]: ", c.thisPlayerName)
-
 	var answer int
+	stdin := bufio.NewReader(os.Stdin)
 
-	fmt.Scanf("%d", &answer)
+	for {
+
+		fmt.Printf("%s, do you want to play again?\n1: Yes\n2: No\nYour choice [1-2]: ", c.thisPlayerName)
+		_, err := fmt.Fscanf(stdin, "%d\n", &answer)
+
+		if err != nil { // error
+			stdin.ReadString('\n')
+			fmt.Println("Number is not valid. Try again.")
+		} else if answer < 1 || answer > 2 { // semantics
+			// stdin.ReadString('\n')
+			fmt.Println("Option number is not in range [1-2]. Try again.")
+		} else {
+			break
+		}
+
+	}
 
 	return answer == 1
 

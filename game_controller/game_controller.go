@@ -17,14 +17,14 @@ func NewGameController(playerType1 player_controller.PlayerType, playerType2 pla
 	return &GameController{
 		game:    game,
 		player1: player_controller.NewPlayerController(playerType1, game.GetBoard(), player1Char, player2Char, player1Name, player2Name),
-		player2: player_controller.NewPlayerController(playerType2, game.GetBoard(), player1Char, player2Char, player1Name, player2Name),
+		player2: player_controller.NewPlayerController(playerType2, game.GetBoard(), player1Char, player2Char, player2Name, player1Name),
 	}
 }
 
 func (c *GameController) ApplicationLoop() {
 
 	for c.SingleGameLoop() {
-
+		c.game.ResetGame()
 	}
 
 }
@@ -67,11 +67,11 @@ func (c *GameController) PlayTurn(thisPlayer player_controller.PlayerController,
 
 	// player1 move loop
 	for {
-		player1Spot := thisPlayer.GetMove()
+		playerSpot := thisPlayer.GetMove()
 
 		// Try placing player1's sign on the board
 
-		winner, err = c.game.SetSpot(thisPlayerSign, player1Spot)
+		winner, err = c.game.SetSpot(thisPlayerSign, playerSpot)
 
 		// Error management after player1's move
 
@@ -83,7 +83,7 @@ func (c *GameController) PlayTurn(thisPlayer player_controller.PlayerController,
 	}
 
 	if winner != board.EMPTY {
-		c.manageWin(board.PLAYER_ONE)
+		c.manageWin(thisPlayerSign)
 		return true, thisPlayer.PlayAgain() && otherPlayer.PlayAgain()
 	} else if c.game.IsFull() {
 		c.player1.DisplayDraw()
