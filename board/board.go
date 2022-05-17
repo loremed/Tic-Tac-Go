@@ -66,7 +66,7 @@ func (g *Game) SetSpot(sign Sign, spot Spot) (Sign, error) {
 	// Exit if spot is not EMPTY
 
 	if g.GetSpot(spot) != EMPTY {
-		fmt.Println("DEBUG:spot taken")
+		//fmt.Println("DEBUG:spot taken")
 		return EMPTY, errors.New("spot is already taken")
 	}
 	g.board[spot.Row][spot.Col] = sign
@@ -99,12 +99,7 @@ func (g *Game) SetSpot(sign Sign, spot Spot) (Sign, error) {
 // Checks if board is winning using the conditions array
 
 func (g *Game) IsWinning() bool {
-	for _, value := range g.conditions {
-		if value == 3 || value == -3 {
-			return true
-		}
-	}
-	return false
+	return g.Winner() != EMPTY
 }
 
 // Checks if there is place on the board
@@ -115,6 +110,42 @@ func (g *Game) IsFull() bool {
 
 func (g *Game) GetBoard() *Board {
 	return &g.board
+}
+
+func (g *Game) Winner() Sign {
+	for _, value := range g.conditions {
+		if value == 3 {
+			return PLAYER_ONE
+		}
+		if value == -3 {
+			return PLAYER_TWO
+		}
+	}
+	return EMPTY
+}
+
+func (g *Game) GetPossibleMoves() (spots []Spot) {
+	moves := []Spot{}
+	for row := 0; row < 3; row++ {
+		for col := 0; col < 3; col++ {
+			if g.board[row][col] == EMPTY {
+				moves = append(moves, Spot{
+					Row: uint8(row),
+					Col: uint8(col),
+				})
+			}
+		}
+	}
+
+	for _, j := range moves {
+		fmt.Printf("%d %d; ", j.Row, j.Col)
+	}
+
+	return moves
+}
+
+func (g *Game) IsOver() bool {
+	return g.IsFull() || g.IsWinning()
 }
 
 // Probably unused
@@ -129,4 +160,8 @@ func (g *Game) ResetGame() {
 	g.moveCount = 0
 
 	g.conditions = [8]int8{0, 0, 0, 0, 0, 0, 0, 0}
+}
+
+func (s Sign) OtherPlayer() Sign {
+	return Sign(int8(s) * -1)
 }
