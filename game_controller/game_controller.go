@@ -16,8 +16,8 @@ func NewGameController(playerType1 player_controller.PlayerType, playerType2 pla
 
 	return &GameController{
 		game:    game,
-		player1: player_controller.NewPlayerController(playerType1, game.GetBoard(), player1Char, player2Char, player1Name, player2Name),
-		player2: player_controller.NewPlayerController(playerType2, game.GetBoard(), player1Char, player2Char, player2Name, player1Name),
+		player1: player_controller.NewPlayerController(playerType1, game, player1Char, player2Char, player1Name, player2Name, board.PLAYER_ONE),
+		player2: player_controller.NewPlayerController(playerType2, game, player1Char, player2Char, player2Name, player1Name, board.PLAYER_TWO),
 	}
 }
 

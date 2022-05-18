@@ -9,6 +9,7 @@ It is now playable only using the command line; future development includes a GU
   - play with a friend or against a CPU player
   - choose a name for each human player
   - custom sign for each player
+  - play against a random CPU or the stronger Minimax implementation, your best chance will be to draw the game!
 
 ## Usage:
   - you need **GO** installed on your system
@@ -18,5 +19,4 @@ It is now playable only using the command line; future development includes a GU
   - at the end of each game you will be asked whether you want to play again
 
 ## Future development:
-  - current CPU player will choose a random spot each turn; a CPU player based on the minimax algorithm will be implemented. The initial configuration will contain a quesstion regarding the type of CPU player one wishes to play against
   - the application runs completely in the command line; a GUI will be implemented, at least for the duration of the game. Even later, a GUI could be created for the initial configuration

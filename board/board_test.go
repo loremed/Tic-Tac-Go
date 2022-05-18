@@ -55,9 +55,9 @@ func TestGameStruct_GetSpot(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			g := &Game{
-				board:      tt.fields.board,
-				moveCount:  tt.fields.moveCount,
-				conditions: tt.fields.conditions,
+				Board:      tt.fields.board,
+				MoveCount:  tt.fields.moveCount,
+				Conditions: tt.fields.conditions,
 			}
 			if got := g.GetSpot(tt.args.spot); got != tt.want {
 				t.Errorf("GameStruct.GetSpot() = %v, want %v", got, tt.want)
@@ -141,9 +141,9 @@ func TestGameStruct_SetSpot(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			g := &Game{
-				board:      tt.fields.board,
-				moveCount:  tt.fields.moveCount,
-				conditions: tt.fields.conditions,
+				Board:      tt.fields.board,
+				MoveCount:  tt.fields.moveCount,
+				Conditions: tt.fields.conditions,
 			}
 			got, err := g.SetSpot(tt.args.sign, tt.args.spot)
 			if (err != nil) != tt.wantErr {
@@ -185,9 +185,9 @@ func TestGameStruct_IsWinning(t *testing.T) {
 			name: "Winning PLAYER_ONE",
 			fields: fields{
 				board: Board{
-					{EMPTY, EMPTY, EMPTY},
-					{EMPTY, EMPTY, EMPTY},
-					{EMPTY, EMPTY, EMPTY},
+					{PLAYER_ONE, EMPTY, EMPTY},
+					{EMPTY, PLAYER_ONE, EMPTY},
+					{EMPTY, EMPTY, PLAYER_ONE},
 				},
 				moveCount:  0,
 				conditions: [8]int8{0, 0, 0, 0, 0, 0, 3, 0},
@@ -198,7 +198,7 @@ func TestGameStruct_IsWinning(t *testing.T) {
 			name: "Winning PLAYER_TWO",
 			fields: fields{
 				board: Board{
-					{EMPTY, EMPTY, EMPTY},
+					{PLAYER_TWO, PLAYER_TWO, PLAYER_TWO},
 					{EMPTY, EMPTY, EMPTY},
 					{EMPTY, EMPTY, EMPTY},
 				},
@@ -211,9 +211,9 @@ func TestGameStruct_IsWinning(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			g := &Game{
-				board:      tt.fields.board,
-				moveCount:  tt.fields.moveCount,
-				conditions: tt.fields.conditions,
+				Board:      tt.fields.board,
+				MoveCount:  tt.fields.moveCount,
+				Conditions: tt.fields.conditions,
 			}
 			if got := g.IsWinning(); got != tt.want {
 				t.Errorf("GameStruct.IsWinning() = %v, want %v", got, tt.want)
@@ -250,9 +250,9 @@ func TestGameStruct_IsFull(t *testing.T) {
 			name: "Full board",
 			fields: fields{
 				board: Board{
-					{EMPTY, EMPTY, EMPTY},
-					{EMPTY, EMPTY, EMPTY},
-					{EMPTY, EMPTY, EMPTY},
+					{PLAYER_ONE, PLAYER_ONE, PLAYER_ONE},
+					{PLAYER_ONE, PLAYER_ONE, PLAYER_ONE},
+					{PLAYER_ONE, PLAYER_ONE, PLAYER_ONE},
 				},
 				moveCount:  9,
 				conditions: [8]int8{3, 0, 0, 0, 0, 0, 0, 0},
@@ -263,9 +263,9 @@ func TestGameStruct_IsFull(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			g := &Game{
-				board:      tt.fields.board,
-				moveCount:  tt.fields.moveCount,
-				conditions: tt.fields.conditions,
+				Board:      tt.fields.board,
+				MoveCount:  tt.fields.moveCount,
+				Conditions: tt.fields.conditions,
 			}
 			if got := g.IsFull(); got != tt.want {
 				t.Errorf("GameStruct.IsFull() = %v, want %v", got, tt.want)
@@ -300,9 +300,9 @@ func TestGameStruct_ResetGame(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			g := &Game{
-				board:      tt.fields.board,
-				moveCount:  tt.fields.moveCount,
-				conditions: tt.fields.conditions,
+				Board:      tt.fields.board,
+				MoveCount:  tt.fields.moveCount,
+				Conditions: tt.fields.conditions,
 			}
 			g.ResetGame()
 		})

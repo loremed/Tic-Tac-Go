@@ -47,6 +47,7 @@ func main() {
 	// Player Two's name
 
 	var player2Name string
+	var player2CPUType int
 
 	if playerNum == 2 {
 
@@ -56,7 +57,28 @@ func main() {
 		fmt.Printf("Hello %s!\n", player2Name)
 	} else {
 		//TODO Choose difficulty of CPU
-		player2Name = "CPU"
+
+		player2Name = "Computer"
+
+		var answer int
+
+		for {
+
+			fmt.Print("Which CPU difficulty level do you want to play against?\n1: Random\n2: Minimax\nYour choice [1-2]: ")
+			_, err := fmt.Fscanf(stdin, "%d\n", &answer)
+
+			if err != nil { // error
+				stdin.ReadString('\n')
+				fmt.Println("Number is not valid. Try again.")
+			} else if answer < 1 || answer > 2 { // semantics
+				// stdin.ReadString('\n')
+				fmt.Println("Option number is not in range [1-2]. Try again.")
+			} else {
+				player2CPUType = answer
+				break
+			}
+
+		}
 	}
 
 	// Player One's Sign
@@ -100,7 +122,7 @@ func main() {
 	if playerNum == 2 {
 		p2ControllerType = player_controller.CLIPLAYER
 	} else {
-		p2ControllerType = player_controller.RANDOMPLAYER
+		p2ControllerType = player_controller.PlayerType(player2CPUType)
 	}
 
 	gameController := game_controller.NewGameController(player_controller.CLIPLAYER, p2ControllerType, player1Sign, player2Sign, player1Name, player2Name)

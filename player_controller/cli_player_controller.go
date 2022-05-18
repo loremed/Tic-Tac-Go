@@ -17,13 +17,13 @@ type CLIPlayerController struct {
 	otherPlayerName string
 }
 
-func NewCLIPlayerController(boardToInterface *board.Board, p1Char string, p2Char string, name1 string, name2 string) CLIPlayerController {
+func NewCLIPlayerController(boardToInterface *board.Board, p1Char string, p2Char string, thisPlayerNameArg string, otherPlayerNameArg string) CLIPlayerController {
 	return CLIPlayerController{
 		b:               boardToInterface,
 		p1Sign:          p1Char,
 		p2Sign:          p2Char,
-		thisPlayerName:  name1,
-		otherPlayerName: name2,
+		thisPlayerName:  thisPlayerNameArg,
+		otherPlayerName: otherPlayerNameArg,
 	}
 }
 
@@ -83,6 +83,9 @@ func (c CLIPlayerController) DisplayError(err string) {
 }
 
 func (c CLIPlayerController) DisplayWin(thisPlayer bool) {
+
+	c.DisplayBoard()
+
 	if thisPlayer {
 		fmt.Printf("\nThe winner is %s\n", c.thisPlayerName)
 		fmt.Printf("%s, you won!! Congratulations!\n\n", c.thisPlayerName)
@@ -93,6 +96,8 @@ func (c CLIPlayerController) DisplayWin(thisPlayer bool) {
 }
 
 func (c CLIPlayerController) DisplayDraw() {
+	c.DisplayBoard()
+
 	fmt.Println("\nThe game ended in a draw!")
 }
 

@@ -16,10 +16,11 @@ type Spot struct {
 
 type Board [3][3]Sign
 
+// Uppercase (exported) for Minimax tests
 type Game struct {
-	board      Board
-	moveCount  uint8
-	conditions [8]int8
+	Board      Board
+	MoveCount  uint8
+	Conditions [8]int8
 }
 
 // Constants
@@ -37,19 +38,19 @@ const _ANTIDIAG = 7
 
 func NewGame() *Game {
 	return &Game{
-		board: Board{
+		Board: Board{
 			{EMPTY, EMPTY, EMPTY},
 			{EMPTY, EMPTY, EMPTY},
 			{EMPTY, EMPTY, EMPTY},
 		},
-		moveCount:  0,
-		conditions: [8]int8{0, 0, 0, 0, 0, 0, 0, 0},
+		MoveCount:  0,
+		Conditions: [8]int8{0, 0, 0, 0, 0, 0, 0, 0},
 	}
 }
 
 // Gets a spot from the board
 func (g *Game) GetSpot(spot Spot) Sign {
-	return g.board[spot.Row][spot.Col]
+	return g.Board[spot.Row][spot.Col]
 }
 
 // Places an X or an O in the spot asked, if it is free
@@ -65,25 +66,39 @@ func (g *Game) SetSpot(sign Sign, spot Spot) (Sign, error) {
 
 	// Exit if spot is not EMPTY
 
-	if g.GetSpot(spot) != EMPTY {
+	if g.GetSpot(spot) != EMPTY && sign != EMPTY {
 		//fmt.Println("DEBUG:spot taken")
 		return EMPTY, errors.New("spot is already taken")
 	}
-	g.board[spot.Row][spot.Col] = sign
+	g.Board[spot.Row][spot.Col] = sign
 
 	// update conditions array and moveCount
 
-	g.moveCount++
+	if sign == EMPTY {
+		g.MoveCount--
+		g.Conditions[spot.Row+_ROW] -= int8(sign)
+		g.Conditions[spot.Col+_COL] -= int8(sign)
 
-	g.conditions[spot.Row+_ROW] += int8(sign)
-	g.conditions[spot.Col+_COL] += int8(sign)
+		if spot.Row == spot.Col {
+			g.Conditions[_DIAG] -= int8(sign)
+		}
 
-	if spot.Row == spot.Col {
-		g.conditions[_DIAG] += int8(sign)
-	}
+		if spot.Row+spot.Col == 2 {
+			g.Conditions[_ANTIDIAG] -= int8(sign)
+		}
 
-	if spot.Row+spot.Col == 2 {
-		g.conditions[_ANTIDIAG] += int8(sign)
+	} else {
+		g.MoveCount++
+		g.Conditions[spot.Row+_ROW] += int8(sign)
+		g.Conditions[spot.Col+_COL] += int8(sign)
+
+		if spot.Row == spot.Col {
+			g.Conditions[_DIAG] += int8(sign)
+		}
+
+		if spot.Row+spot.Col == 2 {
+			g.Conditions[_ANTIDIAG] += int8(sign)
+		}
 	}
 
 	// Check if board is winning after current move
@@ -105,22 +120,63 @@ func (g *Game) IsWinning() bool {
 // Checks if there is place on the board
 
 func (g *Game) IsFull() bool {
-	return g.moveCount == 9
+	// return g.moveCount == 9
+
+	for row := 0; row < 3; row++ {
+		for col := 0; col < 3; col++ {
+			if g.Board[row][col] == EMPTY {
+				return false
+			}
+		}
+	}
+
+	return true
 }
 
 func (g *Game) GetBoard() *Board {
-	return &g.board
+	return &g.Board
 }
 
 func (g *Game) Winner() Sign {
-	for _, value := range g.conditions {
+
+	// Rows
+	if g.Board[0][0] == g.Board[0][1] && g.Board[0][1] == g.Board[0][2] && g.Board[0][0] != EMPTY {
+		return g.Board[0][0]
+	}
+	if g.Board[1][0] == g.Board[1][1] && g.Board[1][1] == g.Board[1][2] && g.Board[1][0] != EMPTY {
+		return g.Board[1][0]
+	}
+	if g.Board[2][0] == g.Board[2][1] && g.Board[2][1] == g.Board[2][2] && g.Board[2][0] != EMPTY {
+		return g.Board[2][0]
+	}
+
+	// Cols
+	if g.Board[0][0] == g.Board[1][0] && g.Board[1][0] == g.Board[2][0] && g.Board[0][0] != EMPTY {
+		return g.Board[0][0]
+	}
+	if g.Board[0][1] == g.Board[1][1] && g.Board[1][1] == g.Board[2][1] && g.Board[0][1] != EMPTY {
+		return g.Board[0][1]
+	}
+	if g.Board[0][2] == g.Board[1][2] && g.Board[1][2] == g.Board[2][2] && g.Board[0][2] != EMPTY {
+		return g.Board[0][2]
+	}
+
+	// Diags
+	if g.Board[0][0] == g.Board[1][1] && g.Board[1][1] == g.Board[2][2] && g.Board[0][0] != EMPTY {
+		return g.Board[0][0]
+	}
+	if g.Board[0][2] == g.Board[1][1] && g.Board[1][1] == g.Board[2][0] && g.Board[0][2] != EMPTY {
+		return g.Board[0][2]
+	}
+
+	/* for _, value := range g.conditions {
 		if value == 3 {
 			return PLAYER_ONE
 		}
 		if value == -3 {
 			return PLAYER_TWO
 		}
-	}
+	}*/
 	return EMPTY
 }
 
@@ -128,7 +184,7 @@ func (g *Game) GetPossibleMoves() (spots []Spot) {
 	moves := []Spot{}
 	for row := 0; row < 3; row++ {
 		for col := 0; col < 3; col++ {
-			if g.board[row][col] == EMPTY {
+			if g.Board[row][col] == EMPTY {
 				moves = append(moves, Spot{
 					Row: uint8(row),
 					Col: uint8(col),
@@ -137,29 +193,30 @@ func (g *Game) GetPossibleMoves() (spots []Spot) {
 		}
 	}
 
-	for _, j := range moves {
+	/* for _, j := range moves {
 		fmt.Printf("%d %d; ", j.Row, j.Col)
-	}
+	} */
 
 	return moves
 }
 
 func (g *Game) IsOver() bool {
+	// fmt.Printf("%t %t\n", g.IsFull(), g.IsWinning())
 	return g.IsFull() || g.IsWinning()
 }
 
 // Probably unused
 
 func (g *Game) ResetGame() {
-	g.board = [3][3]Sign{
+	g.Board = [3][3]Sign{
 		{EMPTY, EMPTY, EMPTY},
 		{EMPTY, EMPTY, EMPTY},
 		{EMPTY, EMPTY, EMPTY},
 	}
 
-	g.moveCount = 0
+	g.MoveCount = 0
 
-	g.conditions = [8]int8{0, 0, 0, 0, 0, 0, 0, 0}
+	g.Conditions = [8]int8{0, 0, 0, 0, 0, 0, 0, 0}
 }
 
 func (s Sign) OtherPlayer() Sign {
