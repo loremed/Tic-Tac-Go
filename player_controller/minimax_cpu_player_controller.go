@@ -28,7 +28,7 @@ func (r MinimaxPlayerController) GetMove() board.Spot {
 	for _, spot := range r.game.GetPossibleMoves() {
 		r.game.SetSpot(r.thisPlayer, spot)
 		score := r.Minimax(r.game, 1, r.thisPlayer.OtherPlayer())
-		r.game.SetSpot(board.EMPTY, spot)
+		r.game.UndoMove(spot)
 
 		if score > bestScore {
 			bestScore = score
@@ -39,18 +39,18 @@ func (r MinimaxPlayerController) GetMove() board.Spot {
 	return bestMove
 }
 
-func (r MinimaxPlayerController) Minimax(tempGame *board.Game, depth int, movingPlayer board.Sign) int {
+func (r MinimaxPlayerController) Minimax(game *board.Game, depth int, movingPlayer board.Sign) int {
 
-	if tempGame.IsOver() {
-		return r.ScoreGame(*tempGame, depth)
+	if game.IsOver() {
+		return r.ScoreGame(*game, depth)
 	}
 
 	scores := []int{}
 
-	for _, spot := range tempGame.GetPossibleMoves() {
-		tempGame.SetSpot(movingPlayer, spot)
-		scores = append(scores, r.Minimax(tempGame, depth+1, movingPlayer.OtherPlayer()))
-		tempGame.SetSpot(board.EMPTY, spot)
+	for _, spot := range game.GetPossibleMoves() {
+		game.SetSpot(movingPlayer, spot)
+		scores = append(scores, r.Minimax(game, depth+1, movingPlayer.OtherPlayer()))
+		game.UndoMove(spot)
 	}
 
 	min_index, max_index := findMinAndMaxIndex(scores)
@@ -62,8 +62,8 @@ func (r MinimaxPlayerController) Minimax(tempGame *board.Game, depth int, moving
 	}
 }
 
-func (r MinimaxPlayerController) ScoreGame(tempGame board.Game, depth int) int {
-	winner := tempGame.Winner()
+func (r MinimaxPlayerController) ScoreGame(game board.Game, depth int) int {
+	winner := game.Winner()
 
 	switch winner {
 	case r.thisPlayer:

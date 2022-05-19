@@ -26,7 +26,7 @@ func TestMinimaxPlayerController_GetMove(t *testing.T) {
 						{board.EMPTY, board.EMPTY, board.EMPTY},
 					},
 					MoveCount:  2,
-					Conditions: [8]int8{0, 2, 0, 1, 1, 1, 1, 1},
+					Conditions: [8]int8{0, 2, 0, 1, 1, 0, 1, 1},
 				},
 				thisPlayer: board.PLAYER_TWO,
 			},

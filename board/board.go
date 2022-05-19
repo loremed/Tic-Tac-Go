@@ -2,7 +2,6 @@ package board
 
 import (
 	"errors"
-	"fmt"
 )
 
 // Types used
@@ -60,7 +59,7 @@ func (g *Game) SetSpot(sign Sign, spot Spot) (Sign, error) {
 	// Exit if sign is not valid
 
 	if sign != PLAYER_ONE && sign != PLAYER_TWO && sign != EMPTY {
-		fmt.Println("DEBUG:invalid sign")
+		// fmt.Println("DEBUG:invalid sign")
 		return EMPTY, errors.New("invalid sign")
 	}
 
@@ -70,35 +69,21 @@ func (g *Game) SetSpot(sign Sign, spot Spot) (Sign, error) {
 		//fmt.Println("DEBUG:spot taken")
 		return EMPTY, errors.New("spot is already taken")
 	}
+
 	g.Board[spot.Row][spot.Col] = sign
 
-	// update conditions array and moveCount
+	// update Conditions array and MoveCount
 
-	if sign == EMPTY {
-		g.MoveCount--
-		g.Conditions[spot.Row+_ROW] -= int8(sign)
-		g.Conditions[spot.Col+_COL] -= int8(sign)
+	g.MoveCount++
+	g.Conditions[spot.Row+_ROW] += int8(sign)
+	g.Conditions[spot.Col+_COL] += int8(sign)
 
-		if spot.Row == spot.Col {
-			g.Conditions[_DIAG] -= int8(sign)
-		}
+	if spot.Row == spot.Col {
+		g.Conditions[_DIAG] += int8(sign)
+	}
 
-		if spot.Row+spot.Col == 2 {
-			g.Conditions[_ANTIDIAG] -= int8(sign)
-		}
-
-	} else {
-		g.MoveCount++
-		g.Conditions[spot.Row+_ROW] += int8(sign)
-		g.Conditions[spot.Col+_COL] += int8(sign)
-
-		if spot.Row == spot.Col {
-			g.Conditions[_DIAG] += int8(sign)
-		}
-
-		if spot.Row+spot.Col == 2 {
-			g.Conditions[_ANTIDIAG] += int8(sign)
-		}
+	if spot.Row+spot.Col == 2 {
+		g.Conditions[_ANTIDIAG] += int8(sign)
 	}
 
 	// Check if board is winning after current move
@@ -111,7 +96,28 @@ func (g *Game) SetSpot(sign Sign, spot Spot) (Sign, error) {
 	return resultSign, nil
 }
 
-// Checks if board is winning using the conditions array
+func (g *Game) UndoMove(spot Spot) {
+
+	oldSign := g.Board[spot.Row][spot.Col]
+
+	// update Conditions array and MoveCount
+
+	g.MoveCount--
+	g.Conditions[spot.Row+_ROW] -= int8(oldSign)
+	g.Conditions[spot.Col+_COL] -= int8(oldSign)
+
+	if spot.Row == spot.Col {
+		g.Conditions[_DIAG] -= int8(oldSign)
+	}
+
+	if spot.Row+spot.Col == 2 {
+		g.Conditions[_ANTIDIAG] -= int8(oldSign)
+	}
+
+	g.Board[spot.Row][spot.Col] = EMPTY
+}
+
+// Checks if board is winning using the Conditions array
 
 func (g *Game) IsWinning() bool {
 	return g.Winner() != EMPTY
@@ -120,17 +126,7 @@ func (g *Game) IsWinning() bool {
 // Checks if there is place on the board
 
 func (g *Game) IsFull() bool {
-	// return g.moveCount == 9
-
-	for row := 0; row < 3; row++ {
-		for col := 0; col < 3; col++ {
-			if g.Board[row][col] == EMPTY {
-				return false
-			}
-		}
-	}
-
-	return true
+	return g.MoveCount == 9
 }
 
 func (g *Game) GetBoard() *Board {
@@ -139,44 +135,14 @@ func (g *Game) GetBoard() *Board {
 
 func (g *Game) Winner() Sign {
 
-	// Rows
-	if g.Board[0][0] == g.Board[0][1] && g.Board[0][1] == g.Board[0][2] && g.Board[0][0] != EMPTY {
-		return g.Board[0][0]
-	}
-	if g.Board[1][0] == g.Board[1][1] && g.Board[1][1] == g.Board[1][2] && g.Board[1][0] != EMPTY {
-		return g.Board[1][0]
-	}
-	if g.Board[2][0] == g.Board[2][1] && g.Board[2][1] == g.Board[2][2] && g.Board[2][0] != EMPTY {
-		return g.Board[2][0]
-	}
-
-	// Cols
-	if g.Board[0][0] == g.Board[1][0] && g.Board[1][0] == g.Board[2][0] && g.Board[0][0] != EMPTY {
-		return g.Board[0][0]
-	}
-	if g.Board[0][1] == g.Board[1][1] && g.Board[1][1] == g.Board[2][1] && g.Board[0][1] != EMPTY {
-		return g.Board[0][1]
-	}
-	if g.Board[0][2] == g.Board[1][2] && g.Board[1][2] == g.Board[2][2] && g.Board[0][2] != EMPTY {
-		return g.Board[0][2]
-	}
-
-	// Diags
-	if g.Board[0][0] == g.Board[1][1] && g.Board[1][1] == g.Board[2][2] && g.Board[0][0] != EMPTY {
-		return g.Board[0][0]
-	}
-	if g.Board[0][2] == g.Board[1][1] && g.Board[1][1] == g.Board[2][0] && g.Board[0][2] != EMPTY {
-		return g.Board[0][2]
-	}
-
-	/* for _, value := range g.conditions {
+	for _, value := range g.Conditions {
 		if value == 3 {
 			return PLAYER_ONE
 		}
 		if value == -3 {
 			return PLAYER_TWO
 		}
-	}*/
+	}
 	return EMPTY
 }
 
